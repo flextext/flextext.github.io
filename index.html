@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        .center {
+            text-align: center;
+            margin: auto;
+            width: 80%;
+            border: 3px solid #73AD21;
+            padding: 20px;
+        }
+        
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flex Text</title>
+</head>
+<body>
+    <div class="center">
+        <h1>Flex Text</h1>
+
+        <h1>המתקנת</h1>
+    </div>
+    <div class="center">
+        <select id="mySelect">
+            <option value="male2female">הפוך זכר לנקבה</option>
+            <option value="male2plural">הפוך זכר רבים</option>
+        </select>
+        <input type="file" id="csvInput" accept=".csv">
+    </div>
+    <div class="center">
+        <input type="file" id="docxInput" accept=".docx">
+    </div>
+    <div class="center">
+        <button onclick="processDocxWithReplacements()">Process DOCX</button>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
+    <script src="index.js"></script>
+</body>
+</html>
