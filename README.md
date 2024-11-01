@@ -1,2 +1,2 @@
-# flextext.github.io
-Flex-Text
+# Flex-Text
+flextext.github.io
