@@ -49,7 +49,8 @@ const tableData = [
       const patterns = [row.masculine, row.feminine, row.plural];
       
       patterns.forEach(pattern => {
-        const regex = new RegExp(`(?<![\\w])([ו|ש]?)${pattern}(?![א-ת])`, 'g');
+        const regex = new RegExp(`(?<![\\w])([ו|ש]?)${pattern}(?![\\w])`, 'g');
+        //const regex = new RegExp(`(?<![\\w])([ו|ש]?)${pattern}(?![א-ת])`, 'g');
         text = text.replace(regex, (match, prefix) => {
           return prefix + row.both;
         });
