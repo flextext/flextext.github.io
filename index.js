@@ -52,7 +52,10 @@ const tableData = [
         //const regex = new RegExp(`(?<![\\w])([ו|ש]?)${pattern}(?![\\w])`, 'g');
         const regex = new RegExp(`(?<![\\w])([ו|ש]?)${pattern}(?![א-ת])`, 'g');
         text = text.replace(regex, (match, prefix) => {
-          return prefix + row.both;
+            if (match.includes('/')) {
+                  return match;
+            }
+            return prefix + row.both;
         });
       });
     });
