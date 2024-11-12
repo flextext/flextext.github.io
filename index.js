@@ -43,184 +43,43 @@ const tableData = [
     { masculine: "לפניך", feminine: "לפניך", plural: "לפניכם", both: "לפניכם/ן" },
     { masculine: "לדעתך", feminine: "לדעתך", plural: "לדעתכם", both: "לדעתכם/ן" },
   ];
-  /*
-  const createReplacementsDictionary = (tableData) => {
-    const replacements = {};
-    tableData.forEach((entry) => {
-      replacements[entry.both] = [entry.masculine, entry.feminine, entry.plural];
-    });
-    return replacements;
-  };
-  function replaceWords(content) {
-    const replacements = createReplacementsDictionary(tableData);
-    for (const [replacement, words] of Object.entries(replacements)) {
-      //const regex = new RegExp(`\\b(${words.join("|")})\\b`, "g");
-      const regex = new RegExp(`(?<![\\w])([ו|ש|ל]?)${words.join("|")}(?<!/)(?![א-ת])`, 'g');
-      content = content.replace(regex, replacement);
-    }
-    return content;
-  }
-  */
-  const createReplacementsDictionary = (tableData) => {
-    const replacements = {};
-    /*tableData.forEach((entry) => {
-      // ביטוי רגולרי לטיפול במילים עם תחיליות אופציונליות 'ו', 'ש', או 'ל'
-      const regex = new RegExp(`\\b(?:[ושל])?(${entry.masculine}|${entry.feminine}|${entry.plural})\\b`, "g");
-      replacements[regex] = entry.both;
-    });*/
-   
-    tableData.forEach((entry) => {
-      // ביטויים רגולריים נפרדים עבור כל צורת מילה: תחילה ננסה ללא תחיליות, ואז עם תחיליות 'ו', 'ש', או 'ל'
-      replacements[entry.masculine] = entry.both;
-      replacements[entry.feminine] = entry.both;
-      replacements[entry.plural] = entry.both;
-    });
-    return replacements;
 
-  };
-  const replaceWords = (text) => {
-    const replacements = createReplacementsDictionary(tableData);
-    for (const [originalWord, replacement] of Object.entries(replacements)) {
-      // חיפוש מילים שלמות
-      const wholeWordRegex = new RegExp(`\\b${originalWord}\\b`, "g");
-      if (wholeWordRegex.test(text)) {
-        text = text.replace(wholeWordRegex, replacement);
-      } else {
-        // חיפוש מילים עם תחיליות 'ו', 'ש', או 'ל'
-        const prefixedRegex = new RegExp(`\\b[ושל]${originalWord}\\b`, "g");
-        text = text.replace(prefixedRegex, replacement);
-      }
-    }
-    return text;
-  };
-  
-  function replaceWords2(text) {
-    tableData.forEach(({ masculine, feminine, plural, both }) => {
-        const wordForms = [masculine, feminine, plural];
-
-        wordForms.forEach(word => {
-          const exactPattern = new RegExp(`\\b${word}\\b`, 'g');
-          text = text.replace(exactPattern, both);
-          const prefixes = ["ו", "ש", "ל"];
-            prefixes.forEach(prefix => {
-                const prefixedPattern = new RegExp(`\\b${prefix}${word}\\b`, 'g');
-                text = text.replace(prefixedPattern, `${prefix}${both}`);
-            });
-        });
-    });
-    return text;
-}
-  // =================================================
-
-function replaceWords1(text) {
-  const words = text.split(/\s+/);
-  const newWords = [];
-  const prefixes = ['ו', 'ש', 'ל'];
-
-  words.forEach(word => {
-    let replaced = false;
-
-    // בודקים התאמה מדויקת כמו קודם
-    for (const entry of tableData) {
-      if (word === entry.masculine || word === entry.feminine || word === entry.plural) {
-        newWords.push(entry.both);
-        replaced = true;
-        break;
-      }
-    }
-
-    // בודקים התאמה עם תחילית
-    if (!replaced) {
-      for (const prefix of prefixes) {
-        if (word.startsWith(prefix) && tableData.some(entry => word.slice(1) === entry.masculine || word.slice(1) === entry.feminine || word.slice(1) === entry.plural)) {
-          newWords.push(prefix + tableData.find(entry => word.slice(1) === entry.masculine || word.slice(1) === entry.feminine || word.slice(1) === entry.plural).both);
-          replaced = true;
-          break;
-        }
-      }
-    }
-
-    if (!replaced) {
-      newWords.push(word);
-    }
-  });
-
-  return newWords.join(' ');
-}
-
-  // =================================================
-  function processDocument(text) {
-    tableData.forEach(row => {
-      const patterns = [row.masculine, row.feminine, row.plural];
-      
-      patterns.forEach(pattern => {
-        //text = text.replace(`(\s|^)${pattern}(?=\s|$)`,row.both);
-        
-        //const regex = new RegExp(`\\b(?<![\\w])([ו|ש|ל]?)${pattern}\\b(?![\\w/])`, 'g');
-        const regex = new RegExp(`(?<![\\w])([ו|ש|ל]?)${pattern}(?<!/)(?![א-ת])`, 'g');
-        //const regex = new RegExp(`(?<![\\w])([ו|ש|ל]?)${pattern}(?<!/)\\b`, 'g');
-        //const regex = new RegExp(`\\b([ו|ש|ל]?)+${pattern}+\\b`, 'g');
-        text = text.replace(regex, (match, prefix) => {
-          //return prefix + row.both;
-          return (prefix + pattern === row.both) ? match : prefix + row.both;
-        });
-      });
-    });
-    return text;
-  }  
-    // =================================================
-  function processDocument3(text) {
-    //const words = text.split(/(\s+|[\.,?!<>\/:\"=0-9\[\]]+)/);
-    const words = text.split(/(\s+|[\.,?!<>:\"=0-9\[\]]+)/);
-
-    for (let i = 0; i < words.length; i++) {
-        let word = words[i];
-
-        // עיבוד המילה מול המילון
-        tableData.forEach(row => {
-            const regex_both = new RegExp(`^([ו|ש|ל]?)${row.both}$`);
-            const match_both = word.match(regex_both);
-            if(!match_both){
-              const patterns = [row.masculine, row.feminine, row.plural];
-              patterns.forEach(pattern => {
-                // ביטוי רגולרי למציאת המילה עם תחילית אופציונלית
-                const regex = new RegExp(`^([ו|ש|ל]?)${pattern}$`);
-                const match = word.match(regex);
-
-                // בדיקת התאמה וקבלת התחילית אם קיימת
-                if (match) {
-                    const prefix = match[1] || "";
-                    const replacement = prefix + row.both;
-
-                    // בדיקה אם המילה אינה שווה ליעד ההחלפה, כולל עם תחילית
-                    if (word !== replacement) {
-                        words[i] = replacement;
-                    }
-                }
-              });
-            }
-        });
-    }
-
-    // החזרת הטקסט המלא לאחר ההחלפות
-    return words.join('');
-  }
-
-//import init, { replace_words } from './text_replacer.wasm';
 // =================================================
-async function run(text) {
-  WebAssembly.instantiateStreaming(fetch("text_replacer.wasm"), importObject).then(
-    (obj) => {
-      // Call an exported function:
-      obj.instance.exports.init();
-      console.log("Original Text:", text);
-      const newText = obj.replace_words(text);
-      console.log("Modified Text:", newText);
-      return newText;
-    },
-  );
- 
+function processDocument3(text) {
+  //const words = text.split(/(\s+|[\.,?!<>\/:\"=0-9\[\]]+)/);
+  const words = text.split(/(\s+|[\.,?!<>:\"=0-9\[\]]+)/);
 
+  for (let i = 0; i < words.length; i++) {
+      let word = words[i];
+
+      // עיבוד המילה מול המילון
+      tableData.forEach(row => {
+          const regex_both = new RegExp(`^([ו|ש|ל]?)${row.both}$`);
+          const match_both = word.match(regex_both);
+          if(!match_both){
+            const patterns = [row.masculine, row.feminine, row.plural];
+            patterns.forEach(pattern => {
+              // ביטוי רגולרי למציאת המילה עם תחילית אופציונלית
+              const regex = new RegExp(`^([ו|ש|ל]?)${pattern}$`);
+              const match = word.match(regex);
+
+              // בדיקת התאמה וקבלת התחילית אם קיימת
+              if (match) {
+                  const prefix = match[1] || "";
+                  const replacement = prefix + row.both;
+
+                  // בדיקה אם המילה אינה שווה ליעד ההחלפה, כולל עם תחילית
+                  if (word !== replacement) {
+                      words[i] = replacement;
+                  }
+              }
+            });
+          }
+      });
+  }
+
+  // החזרת הטקסט המלא לאחר ההחלפות
+  return words.join('');
 }
 // =================================================
 async function processDocxWithReplacements() {
@@ -237,11 +96,8 @@ async function processDocxWithReplacements() {
         const content = await zip.loadAsync(docxFile);
 
         const documentXml = await zip.file('word/document.xml').async('string');
-        //let newDocumentXml = replaceWordsInXml(documentXml, replacements);
-        let newDocumentXml = processDocument3(documentXml);
-        //let newDocumentXml = replaceWords1(documentXml);
-        //let newDocumentXml = run(documentXml);
-
+        let newDocumentXml = processDocument(documentXml);
+        
         zip.file('word/document.xml', newDocumentXml);
 
         const newFileContent = await zip.generateAsync({ type: 'blob' });
