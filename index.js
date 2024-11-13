@@ -1,4 +1,5 @@
-var doc_postfix = "_fixed.docx";
+var doc_postfix = "_female.docx";
+var convert_to = 0
 // =================================================
 const tableData = [
     { masculine: "תאר", feminine: "תארי", plural: "תארו", both: "תאר/י" },
@@ -42,11 +43,27 @@ const tableData = [
     { masculine: "התמקד", feminine: "התמקדי", plural: "התמקדו", both: "התמקד/י" },
     { masculine: "לפניך", feminine: "לפניך", plural: "לפניכם", both: "לפניכם/ן" },
     { masculine: "לדעתך", feminine: "לדעתך", plural: "לדעתכם", both: "לדעתכם/ן" },
-  ];
+];
 
 // =================================================
-function processDocument3(text) {
-  //const words = text.split(/(\s+|[\.,?!<>\/:\"=0-9\[\]]+)/);
+const selectElement = document.getElementById('mySelect');
+selectElement.addEventListener('change', () => {
+  const selectedValue = selectElement.value;
+  if (selectedValue == 'toFemale'){
+    convert_to = 0;
+    doc_postfix = "_female.docx";
+  }if (selectedValue == 'toMale'){
+    convert_to = 1;
+    doc_postfix = "_male.docx";
+  }
+  
+  if (selectedValue == 'toPlural'){
+    convert_to = 2;
+    doc_postfix = "_plural.docx";
+  }
+});
+// =================================================
+function processDocument(text) {
   const words = text.split(/(\s+|[\.,?!<>:\"=0-9\[\]]+)/);
 
   for (let i = 0; i < words.length; i++) {
@@ -54,27 +71,36 @@ function processDocument3(text) {
 
       // עיבוד המילה מול המילון
       tableData.forEach(row => {
-          const regex_both = new RegExp(`^([ו|ש|ל]?)${row.both}$`);
-          const match_both = word.match(regex_both);
-          if(!match_both){
-            const patterns = [row.masculine, row.feminine, row.plural];
-            patterns.forEach(pattern => {
-              // ביטוי רגולרי למציאת המילה עם תחילית אופציונלית
-              const regex = new RegExp(`^([ו|ש|ל]?)${pattern}$`);
-              const match = word.match(regex);
-
-              // בדיקת התאמה וקבלת התחילית אם קיימת
-              if (match) {
-                  const prefix = match[1] || "";
-                  const replacement = prefix + row.both;
-
-                  // בדיקה אם המילה אינה שווה ליעד ההחלפה, כולל עם תחילית
-                  if (word !== replacement) {
-                      words[i] = replacement;
-                  }
-              }
-            });
+          //const regex_both = new RegExp(`^([ו|ש|ל]?)${row.both}$`);
+          //const match_both = word.match(regex_both);
+          //if(!match_both){
+          var patterns = [row.masculine, row.both, row.plural];
+          var reolaceTo = row.feminine;
+          if (convert_to == 1){
+            patterns = [row.both, row.feminine, row.plural];
+            reolaceTo = row.masculine;
           }
+          if (convert_to == 2){
+            patterns = [row.masculine, row.feminine, row.plural];
+            reolaceTo = row.both;
+          }
+          patterns.forEach(pattern => {
+            // ביטוי רגולרי למציאת המילה עם תחילית אופציונלית
+            const regex = new RegExp(`^([ו|ש|ל]?)${pattern}$`);
+            const match = word.match(regex);
+
+            // בדיקת התאמה וקבלת התחילית אם קיימת
+            if (match) {
+                const prefix = match[1] || "";
+                const replacement = prefix + reolaceTo;
+
+                // בדיקה אם המילה אינה שווה ליעד ההחלפה, כולל עם תחילית
+                if (word !== replacement) {
+                    words[i] = replacement;
+                }
+            }
+          });
+          //}
       });
   }
 
