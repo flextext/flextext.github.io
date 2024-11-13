@@ -4,7 +4,7 @@ var convert_to = 0
 const tableData = [
     { masculine: "תאר", feminine: "תארי", plural: "תארו", both: "תאר/י" },
     { masculine: "הצג", feminine: "הציגי", plural: "הציגו", both: "הצג/י" },
-    { masculine: "הסבר", feminine: "הסבירי", plural: "הסבירו", both: "הסביר/י" },
+    { masculine: "הסבר", feminine: "הסבירי", plural: "הסבירו", both: "הסבר/י" },
     { masculine: "סקר", feminine: "סקרי", plural: "סקרו", both: "סקר/י" },
     { masculine: "נמק", feminine: "נמקי", plural: "נמקו", both: "נמק/י" },
     { masculine: "הדגם", feminine: "הדגימי", plural: "הדגימו", both: "הדגים/י" },
@@ -43,6 +43,7 @@ const tableData = [
     { masculine: "התמקד", feminine: "התמקדי", plural: "התמקדו", both: "התמקד/י" },
     { masculine: "לפניך", feminine: "לפניך", plural: "לפניכם", both: "לפניכם/ן" },
     { masculine: "לדעתך", feminine: "לדעתך", plural: "לדעתכם", both: "לדעתכם/ן" },
+    { masculine: "קרא", feminine: "קראי", plural: "קראו", both: "קרא/י" },
 ];
 
 // =================================================
