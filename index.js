@@ -67,43 +67,38 @@ function processDocument(text) {
   const words = text.split(/(\s+|[\.,?!<>:\"=0-9\[\]]+)/);
 
   for (let i = 0; i < words.length; i++) {
-      let word = words[i];
+    let word = words[i];
 
-      // עיבוד המילה מול המילון
-      tableData.forEach(row => {
-          //const regex_both = new RegExp(`^([ו|ש|ל]?)${row.both}$`);
-          //const match_both = word.match(regex_both);
-          //if(!match_both){
-          var patterns = [row.masculine, row.both, row.plural];
-          var reolaceTo = row.feminine;
-          if (convert_to == 1){
-            patterns = [row.both, row.feminine, row.plural];
-            reolaceTo = row.masculine;
+    // עיבוד המילה מול המילון
+    tableData.forEach(row => {
+      var patterns = [row.masculine, row.both, row.plural];
+      var reolaceTo = row.feminine;
+      if (convert_to == 1){
+        patterns = [row.both, row.feminine, row.plural];
+        reolaceTo = row.masculine;
+      }
+      if (convert_to == 2){
+        patterns = [row.masculine, row.feminine, row.plural];
+        reolaceTo = row.both;
+      }
+      patterns.forEach(pattern => {
+        // ביטוי רגולרי למציאת המילה עם תחילית אופציונלית
+        const regex = new RegExp(`^([ו|ש|ל]?)${pattern}$`);
+        const match = word.match(regex);
+
+        // בדיקת התאמה וקבלת התחילית אם קיימת
+        if (match) {
+          const prefix = match[1] || "";
+          const replacement = prefix + reolaceTo;
+
+          // בדיקה אם המילה אינה שווה ליעד ההחלפה, כולל עם תחילית
+          if (word !== replacement) {
+              words[i] = replacement;
           }
-          if (convert_to == 2){
-            patterns = [row.masculine, row.feminine, row.plural];
-            reolaceTo = row.both;
-          }
-          patterns.forEach(pattern => {
-            // ביטוי רגולרי למציאת המילה עם תחילית אופציונלית
-            const regex = new RegExp(`^([ו|ש|ל]?)${pattern}$`);
-            const match = word.match(regex);
-
-            // בדיקת התאמה וקבלת התחילית אם קיימת
-            if (match) {
-                const prefix = match[1] || "";
-                const replacement = prefix + reolaceTo;
-
-                // בדיקה אם המילה אינה שווה ליעד ההחלפה, כולל עם תחילית
-                if (word !== replacement) {
-                    words[i] = replacement;
-                }
-            }
-          });
-          //}
+        }
       });
+    });
   }
-
   // החזרת הטקסט המלא לאחר ההחלפות
   return words.join('');
 }
@@ -115,9 +110,7 @@ async function processDocxWithReplacements() {
         alert("יש לבחור גם קובץ DOCX");
         return;
     }
-
-    try {
-    
+    try {    
         const zip = new JSZip();
         const content = await zip.loadAsync(docxFile);
 
