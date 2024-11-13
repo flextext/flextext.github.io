@@ -61,6 +61,11 @@ selectElement.addEventListener('change', () => {
     convert_to = 2;
     doc_postfix = "_plural.docx";
   }
+  if (selectedValue == 'toBoth'){
+    convert_to = 3;
+    doc_postfix = "_both.docx";
+  }
+  //toBoth
 });
 // =================================================
 function processDocument(text) {
@@ -78,6 +83,10 @@ function processDocument(text) {
         reolaceTo = row.masculine;
       }
       if (convert_to == 2){
+        patterns = [row.masculine, row.feminine, row.both];
+        reolaceTo = row.plural;
+      }
+      if (convert_to == 3){
         patterns = [row.masculine, row.feminine, row.plural];
         reolaceTo = row.both;
       }
