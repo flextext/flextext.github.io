@@ -48,7 +48,7 @@ const tableData = [
 ];
 
 // =================================================
-
+/*
 document.addEventListener("DOMContentLoaded", () => {
     console.log("Document loaded and script is running.");
 
@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error("File button not found.");
     }
 });
-
+*/
 // =================================================
 function handleFileUpload(event) {
   const fileInput = event.target;
