@@ -1,5 +1,5 @@
 var doc_postfix = "_female.docx";
-var convert_to = 0
+var convert_to = -1
 var docxFile = null;
 // =================================================
 const tableData = [
@@ -50,27 +50,24 @@ const tableData = [
 // =================================================
 
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("Document loaded and script is running.");
+    console.log("Document loaded and script is running.");
 
-  const genderSelect = document.getElementById("genderSelect");
-  if (genderSelect) {
-      console.log("Gender select found.");
-      genderSelect.addEventListener("change", handleGenderSelection);
-  } else {
-      console.error("Gender select not found.");
-  }
-  });
-  function triggerFileInput() {
-    document.getElementById("docxInput").click();  // בלחיצה על ה-`span`, נלחץ על ה-`input` בצורה אוטומטית
-  }
-  /*
-  const fileSelect = document.getElementById("docxInput");
-  if (fileSelect) {
-      console.log("File button found.");
-      fileSelect.addEventListener("change", handleFileUpload);
-  } else {
-      console.error("File button not found.");
-  }*/
+    const genderSelect = document.getElementById("genderSelect");
+    if (genderSelect) {
+        console.log("Gender select found.");
+        genderSelect.addEventListener("change", handleGenderSelection);
+    } else {
+        console.error("Gender select not found.");
+    }
+    const fileSelect = document.getElementById("docxInput");
+    if (fileSelect) {
+        console.log("File button found.");
+        fileSelect.addEventListener("change", handleFileUpload);
+    } else {
+        console.error("File button not found.");
+    }
+});
+
 // =================================================
 function handleFileUpload(event) {
   const fileInput = event.target;
@@ -78,7 +75,7 @@ function handleFileUpload(event) {
   docxFile = file;
     if (docxFile) {
         console.log("Selected file:", docxFile.name);
-        // כאן ניתן להוסיף לוגיקה לעיבוד הקובץ
+        processDocxWithReplacements();
     } else {
         console.log("No file selected.");
     }
@@ -111,7 +108,6 @@ function handleGenderSelection(event) {
     convert_to = 3;
     doc_postfix = "_both.docx";
   }
-  //toBoth
 };
 // =================================================
 function processDocument(text) {
@@ -164,6 +160,10 @@ async function processDocxWithReplacements() {
 
     if (!docxFile) {
         alert("יש לבחור גם קובץ DOCX");
+        return;
+    }
+    if (convert_to == -1){
+      alert("יש לבחור מגדר");
         return;
     }
     try {    
