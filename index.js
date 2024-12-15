@@ -1,5 +1,6 @@
 var doc_postfix = "_female.docx";
 var convert_to = 0
+var docxFile = null;
 // =================================================
 const tableData = [
     { masculine: "תאר", feminine: "תארי", plural: "תארו", both: "תאר/י" },
@@ -47,27 +48,71 @@ const tableData = [
 ];
 
 // =================================================
-const selectElement = document.getElementById('mySelect');
-selectElement.addEventListener('change', () => {
-  const selectedValue = selectElement.value;
-  if (selectedValue == 'toFemale'){
+
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("Document loaded and script is running.");
+
+  const genderSelect = document.getElementById("genderSelect");
+  if (genderSelect) {
+      console.log("Gender select found.");
+      genderSelect.addEventListener("change", handleGenderSelection);
+  } else {
+      console.error("Gender select not found.");
+  }
+  });
+  function triggerFileInput() {
+    document.getElementById("docxInput").click();  // בלחיצה על ה-`span`, נלחץ על ה-`input` בצורה אוטומטית
+  }
+  /*
+  const fileSelect = document.getElementById("docxInput");
+  if (fileSelect) {
+      console.log("File button found.");
+      fileSelect.addEventListener("change", handleFileUpload);
+  } else {
+      console.error("File button not found.");
+  }*/
+// =================================================
+function handleFileUpload(event) {
+  const fileInput = event.target;
+  const file = fileInput.files[0];
+  docxFile = file;
+    if (docxFile) {
+        console.log("Selected file:", docxFile.name);
+        // כאן ניתן להוסיף לוגיקה לעיבוד הקובץ
+    } else {
+        console.log("No file selected.");
+    }
+}
+
+// =================================================
+function handleGenderSelection(event) {
+
+  const selectedGender = event.target.value; // מקבל את הערך הנבחר
+  const genderLabel = document.getElementById("genderLabel"); // אלמנט התצוגה
+
+  if (selectedGender && genderLabel) {
+      genderLabel.textContent = selectedGender; // מעדכן את הכיתוב
+  } else {
+      console.error("Gender label not found or no gender selected.");
+  }
+  console.log("Selected gender:", selectedGender);
+  if (selectedGender == 'נקבה'){
     convert_to = 0;
     doc_postfix = "_female.docx";
-  }if (selectedValue == 'toMale'){
+  }if (selectedGender == 'זכר'){
     convert_to = 1;
     doc_postfix = "_male.docx";
   }
-  
-  if (selectedValue == 'toPlural'){
+  if (selectedGender == 'רבים'){
     convert_to = 2;
     doc_postfix = "_plural.docx";
   }
-  if (selectedValue == 'toBoth'){
+  if (selectedGender == 'רבים/ות'){
     convert_to = 3;
     doc_postfix = "_both.docx";
   }
   //toBoth
-});
+};
 // =================================================
 function processDocument(text) {
   const words = text.split(/(\s+|[\.,?!<>:\"=0-9\[\]]+)/);
@@ -112,9 +157,10 @@ function processDocument(text) {
   // החזרת הטקסט המלא לאחר ההחלפות
   return words.join('');
 }
+
 // =================================================
 async function processDocxWithReplacements() {
-    const docxFile = document.getElementById('docxInput').files[0];
+    //const docxFile = document.getElementById('docxInput').files[0];
 
     if (!docxFile) {
         alert("יש לבחור גם קובץ DOCX");
