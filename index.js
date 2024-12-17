@@ -48,26 +48,10 @@ const tableData = [
 ];
 
 // =================================================
-/*
-document.addEventListener("DOMContentLoaded", () => {
-    console.log("Document loaded and script is running.");
-
-    const genderSelect = document.getElementById("genderSelect");
-    if (genderSelect) {
-        console.log("Gender select found.");
-        genderSelect.addEventListener("change", handleGenderSelection);
-    } else {
-        console.error("Gender select not found.");
-    }
-    const fileSelect = document.getElementById("docxInput");
-    if (fileSelect) {
-        console.log("File button found.");
-        fileSelect.addEventListener("change", handleFileUpload);
-    } else {
-        console.error("File button not found.");
-    }
-});
-*/
+function handleWordsList(event){
+  console.log("handleWordsList.");
+  window.open("words.pdf", "_blank");
+}
 // =================================================
 function handleFileUpload(event) {
   const fileInput = event.target;
