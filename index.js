@@ -64,7 +64,26 @@ function handleFileUpload(event) {
         console.log("No file selected.");
     }
 }
+// =================================================
+function handleOpenVideo(event){
 
+  const openVideoButton = document.getElementById('openVideo');
+  const videoModal = document.getElementById('videoModal');
+  const overlay = document.getElementById('overlay');
+  const videoPlayer = document.getElementById('videoPlayer');
+  
+  overlay.addEventListener('click', () => {
+    videoModal.style.display = 'none';
+    overlay.style.display = 'none';
+    videoPlayer.pause();
+    videoPlayer.currentTime = 0;
+  });
+  //openVideoButton.addEventListener('click', () => {
+      videoModal.style.display = 'block';
+      overlay.style.display = 'block';
+      videoPlayer.play();
+    //});
+}
 // =================================================
 function handleGenderSelection(event) {
 
