@@ -53,6 +53,10 @@ function handleWordsList(event){
   window.open("words.pdf", "_blank");
 }
 // =================================================
+function handleInstruction(event){
+  window.open("instruction.pdf", "_blank");
+}
+// =================================================
 function handleFileUpload(event) {
   const fileInput = event.target;
   const file = fileInput.files[0];
